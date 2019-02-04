@@ -1,6 +1,6 @@
-# This is my personal blog/website/coding rant space
+## This is my personal blog/website/coding rant space
 
-# This website is built using Jekyll and the Hydeout theme
+## This website is built using Jekyll and the Hydeout theme
 
 Hydeout updates the original [Hyde](https://github.com/poole/hyde)
 theme for [Jekyll](http://jekyllrb.com) 3.x and adds new functionality.
