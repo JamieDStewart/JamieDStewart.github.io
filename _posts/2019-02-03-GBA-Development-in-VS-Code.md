@@ -18,7 +18,7 @@ I've put up a simple project on my github to get you started with GBA dev, <a hr
 There's a video of me going through this material too.
 
 <div class="embed-responsive embed-responsive-16by9">
-  <iframe width="640" height="360" src="https://youtu.be/Rj0lf46iljc" frameborder="0" allowfullscreen></iframe>
+  <iframe width="640" height="360" src="https://www.youtube.com/embed/Rj0lf46iljc" frameborder="0" allowfullscreen></iframe>
 </div>
 
 In the past I've used tools like No$GBA to debug and run GBA games/things that I've worked on, now don't get me wrong No$GBA is great and has some fantastic features and a very nice layout for tiles and backgrounds but it's debugger can be a little overwhelming if you're just starting out and you don't speak ARM ASM.  
