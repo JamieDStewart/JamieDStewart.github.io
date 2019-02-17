@@ -15,7 +15,7 @@ But then I'm pretty comfortable with looking at ASM code and not everyone is me.
 
 Anyway, the first program that you can build an run in an the emulator looks like the following:
 
-![alt text](/assets/images/running.PNG "GBA:101")
+![Running the Basic GBA Program](/assets/images/running.PNG "GBA:101")
 
 Honsetly it's some of the worst code I've written in recent history and I've written some pretty bad code in my time as a developer. Some to just get something working and some when I started out because I didn't know what I was doing. 
 
@@ -96,7 +96,7 @@ Just without any of the user input for now. We'll cover user input in the next p
 First thing we need to add is a function to let us know when a VBLANK is taking place. A VBLANK occurs when the screen has finished rendering, there is a period of time that it takes before the screen begins to draw again. This is a bit of a throw back to when games consoles ran on CRT monitors and had to wait for the physical VBLANK to occur.
 
 The following image explains the dimensions and what a screenblank is pretty clearly
-[!alt text](/assets/images/2019-02-16-003.PNG "GBA: vblank")
+[Visual Blank Explained in an picture](/assets/images/2019-02-16-003.PNG "GBA: vblank")
 
 Ideally to prevent visible tearing when we render out to the screen buffer we want to carry out all this drawing within the VBLANK window.
 
@@ -266,11 +266,11 @@ In the above it's important to note that we're passing the ball object around as
 
 Then modify the **main()** function so that it looks like the following 
 
-[!alt text](/assets/images/2019-02-16-004.PNG "GBA: Main with a Ball!")
+[Main function with a Ball!](/assets/images/2019-02-16-004.PNG "GBA: Main with a Ball!")
 
 Running this program in it's current state should provide you with the following rather static GBA Rom. 
 
-[!alt text](/assets/images/2019-02-16-005.PNG "GBA: Rather Dull huh!")
+[Running the program as it is..](/assets/images/2019-02-16-005.PNG "GBA: Rather Dull huh!")
 
 Let's add a little bit of movement to the ball by getting that StartBall function to actually do something. First up we're going to add some functionality to provide us with a random number value that will give the ball a random starting direction, and a fucntion to get a random value within a range in the case of our ball we want that to be between -1 and 1.
 
