@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "GBA Development: Using VS Code for retro dev"
+title: "GBA Development: OS X pathces and use an older version of mGBA"
 categories:
   - GBA Dev
 tags:
