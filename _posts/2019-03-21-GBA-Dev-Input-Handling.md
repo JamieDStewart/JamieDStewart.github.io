@@ -130,7 +130,7 @@ if( keyDown( A | B ) == (A|B) )
 Ok so we can tell when a key is down and a key is up... but we haven't made any use of that previous state variable yet. Well we can use that to figure out if a key has been **held**, if the key has just been **released** or if a key has just been **pressed**.
 Here are those functions in the order of held, released, just pressed (called this one hit).
 
-{% hightlight C %}
+{% highlight C %}
 INLINE u16		keyHeld(u16 a_key)       { return (__currKeys & __prevKeys) & a_key; }
 INLINE u16		keyReleased(u16 a_key)   { return (~__currKeys & __prevKeys) & a_key; }
 INLINE u16		keyHit(u16 a_key)        { return (__currKeys & ~__prevKeys) & a_key; }
