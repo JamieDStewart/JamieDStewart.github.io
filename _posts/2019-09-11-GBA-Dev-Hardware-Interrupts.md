@@ -242,3 +242,7 @@ while (1)
 {% endhighlight %}
 
 That should be enough to get the VBLANK interrupt happening and to finally get rid of having to use the laothsome VSync function that we were previously relying upon to sync up our frame rate and our processing.
+
+In a later tutorial I will come back to Interrupt handling to demonstrate how to write an interrupt switch board, that is a function that is called when an interrupt occurs that can then test to see which interrupt has been triggered, and call the appropritate code to handle that specific interrupt. 
+This will lead into looking at things like potentially nested interrupts, which are quite possible to carry out however the occurance of how frequently you might want to utilise these things in actual gameplay code would need to be seen and it certainly dependent on the type of game that you wish to develop.
+
