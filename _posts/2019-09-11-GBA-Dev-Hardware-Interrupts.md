@@ -51,7 +51,10 @@ As these hardware interrupts are handled at the bios level then let's introduce 
 {% endhighlight %}
 
 ### Setting and Acknowledging Interrupts ###
-Now that we have a way to enable interrupts we need to be able to set those interrupts up to be triggered, and when triggered we need a way to acknowledge when these interrupts are handled. There are two 16 bit registers that are used to set and acknowledge interrupts. These are defined in GBATek as REG_IE (Interrupt Enable Register) 0x04000200 and REG_IF 0x04000202 (Interrupt Request Acknowledge).
+Now that we have a way to enable interrupts we need to be able to set those interrupts up to be triggered, and when triggered we need a way to acknowledge when these interrupts are handled.
+By 'handled' I mean a way for us to inform the system that the triggered interrupt has been dealt with.
+
+There are two 16 bit registers that are used to set and acknowledge interrupts. These are defined in GBATek as REG_IE (Interrupt Enable Register) 0x04000200 and REG_IF 0x04000202 (Interrupt Request Acknowledge).
 
 These defines could now be added into our newly created **gba_bios.h** file
 
@@ -89,7 +92,7 @@ There is quite a lot that can be done with these, but for today's exercise and t
 ### How do interrupts get called? ###
 Ok it's great that we have some interrupt registers, but how does any code, or rather how do we specify what code gets called when one of thse interrupts is triggered?
 
-Well as we're intereseted in setting up a VBLANK interrupt there is an additional place that we need to register that interrupts are enabled for the screen and this is with the register for the display controller (**REG_DIPSTAT**) so let's add that into the gba_bios.h file too.
+Well as we're intereseted in setting up a VBLANK interrupt there is an additional place that we need to register that interrupts are enabled for the screen and this is with the register for the display status (**REG_DIPSTAT**) so let's add that into the gba_bios.h file too.
 
 {% highlight C %}
 
@@ -208,7 +211,7 @@ This function fires off an ASM call by making use of the C asm call. Then the SW
 This is our function that we want the CPU to call when an interrupt is triggered.  As we are only registering INT_VBLANK as the only interrupt then this is all that we need to look for in this function. It should be noted that there can only be one function registered with the Interrupt Handler that the CPU will call into. There is not the ability to register multiple functions to be called by the Interrupt Handler, shoud we wish to handle more than the VBLANK interrupt then we would need to add some additonal code into this function to test which interrupt has been triggered and then handle that interrupt appropriately. 
 
 **void register_vblank_isr**
-This function demonstrates how to set up for a VBLANK interrupt to be handled, first the Interrupt Manager is disabled to prevent any interrupts for triggering, then the interrupt function is registered, then the appropriate flags on the dispaly controller are set. Finally the expected interrupt flag is set to the VBLANK flag and the Interrupt Manager is switched back on.
+This function demonstrates how to set up for a VBLANK interrupt to be handled, first the Interrupt Manager is disabled to prevent any interrupts for triggering, then the interrupt function is registered, then the appropriate flags on the dispaly status are set. Finally the expected interrupt flag is set to the VBLANK flag and the Interrupt Manager is switched back on.
 
 ### Using all of this ###
 
