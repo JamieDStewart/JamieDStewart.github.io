@@ -1,13 +1,4 @@
----
-layout: post
-title: "GBA Development: 001 - My First Pixels"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
----
+# GBA Development: 001 - My First Pixels
 
 Ok so getting started with GBA programming if you've seen the previous post to this one and taken the time to view the <a href="https://github.com/JamieDStewart/GBA_VSCode_Basic">basic project</a> that's up on GitHub then you will have seen some pretty awful code. 
 The project setup itself within VS Code is ok, things compile and build and we can debug the program quite well, admittedley I'd like to have a proper debug view that clearly showed the current values in the GB's registers but if I want that I can just load the ROM file into another debugger like no$GBA and debug from there.

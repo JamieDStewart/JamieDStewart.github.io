@@ -1,13 +1,4 @@
----
-layout: post
-title: "GBA Development: Using VS Code for retro dev"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
----
+# GBA Development in VS Code
 
 So the first port of call on programming that I want to cover is Game Boy Advance programming using Visual Studio Code as the IDE of choice.
 

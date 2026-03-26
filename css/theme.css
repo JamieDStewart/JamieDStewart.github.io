@@ -1,0 +1,11 @@
+.site-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.markdeep * {
+  font-family: inherit !important;
+  color: inherit !important;
+}
+

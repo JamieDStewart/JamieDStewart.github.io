@@ -1,13 +1,4 @@
----
-layout: post
-title: "GBA Development: OS X pathces and use an older version of mGBA"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
----
+# GBA Development: OS X pathces and use an older version of mGBA
 
 Ok so a couple of small items that have cropped up since I put up that first YouTube video on the VS Code setup for GBA Dev. I've cleaned up some of the items in the project and I've commited some Mac specific changes to the **tasks.json**, **launch.json**, and **c_cpp_properties.json** files to make working on Mac a bit nicer. Although as I discovered thanks to a reddit comment, there's a problem with mGBA's latest release and gdb debuggin in VS Code.
 
