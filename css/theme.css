@@ -4,8 +4,82 @@
   color: #fff;
 }
 
-.markdeep * {
+/* Force layout stability */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: system-ui, sans-serif !important;
+  background: #f3f4f6 !important;
+}
+
+.layout {
+  display: flex !important;
+  flex: 1 !important;
+}
+
+/* Prevent Markdeep from overriding your layout */
+.markdeep, .markdeep * {
   font-family: inherit !important;
   color: inherit !important;
+  background: inherit !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove aggressive resets that may cause layout shifts */
+.md-sandbox * {
+  font-family: inherit;
+  color: inherit;
+  background: inherit;
+}
+
+.md-sandbox div {
+  margin: 0;
+  padding: 0;
+}
+
+/* Restore spacing inside the post content */
+.markdeep .md {
+  padding: 1rem 0;
+  white-space: pre-wrap;
+}
+
+#post {
+  font-family: system-ui, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+#post h1, #post h2, #post h3, #post h4, #post h5, #post h6 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: #111;
+}
+
+#post p {
+  margin: 0;
+}
+
+#post code {
+  background: #f4f4f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}
+
+#post pre, #post .code {
+  background: #f4f4f4;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-family: 'Courier New', monospace;
+}
+
+#post img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
 }
 
