@@ -1,5 +1,13 @@
 # GBA Development: 001 - My First Pixels
 
+~~~~{.cpp}
+int main() {
+    // test comment
+    return 0;
+}
+~~~~
+
+
 Ok so getting started with GBA programming if you've seen the previous post to this one and taken the time to view the <a href="https://github.com/JamieDStewart/GBA_VSCode_Basic">basic project</a> that's up on GitHub then you will have seen some pretty awful code. 
 The project setup itself within VS Code is ok, things compile and build and we can debug the program quite well, admittedley I'd like to have a proper debug view that clearly showed the current values in the GB's registers but if I want that I can just load the ROM file into another debugger like no$GBA and debug from there.
 But then I'm pretty comfortable with looking at ASM code and not everyone is me. So the VS Code GCC debugger will suffice for the majority of what we're doing.
@@ -12,9 +20,9 @@ Honsetly it's some of the worst code I've written in recent history and I've wri
 
 But looking at the above I wouldn't be surprised if you looked at line 7 and thought *"What the hell is that?!"*
 
-```c
+~~~~
 *(unsigned int*)0x04000000 = 0x0403;
-```
+~~~~
 
 So looking at that we have an unsigned int pointer to a memory address, yeah in C and C++ you can directly access memory addresses like that. It's crazy handy and potentially super destructive. Then we're dereferencing whatever is at memory address *0x04000000* and then allocating the value of *0x0403* into that memory.
 
@@ -25,7 +33,7 @@ Oh and we're accissing that memory location as an unsigned integer, but as we're
 Tell you what, lets neaten things up a little bit. Grab/Clone the [Basic Project](https://github.com/JamieDStewart/GBA_VSCode_Basic) and let's start by adding some code to ensure that our variables are all of the appropriate bit size, leave nothing to chance here. Put the following code snippet right after the include intellisense directive.
 
 
-```c
+~~~~{.c}
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -42,7 +50,7 @@ typedef volatile uint32_t		v_uint32;
 typedef volatile int8_t			v_int8;
 typedef volatile int16_t		v_int16;
 typedef volatile int32_t		v_int32;
-```
+~~~~
 
 Ok so now everything has a typedefined variable name that indicates the bit size of the variable. Brilliant, but what's this *volatile* business? Ok so compilers are pretty clever, they may compile out some code on occasion, or optimise some things like say if we're reading a value from a variable that never changes in our code the compiler might just go ahead and replace that variable with a constant value. Which is great, unless that variable is a memory address that can be modified by a hardware interrupt or switch.
 
@@ -50,34 +58,34 @@ So the *volatile* keyword is used to let the compiler (and us) know that this va
 
 Great our types are sorted let's clean up that line 7 a bit more by making use of a #define or two
 
-```c
+~~~~ { .c }
 #define REG_DISPLAYCONTROL *((v_uint32*)(0x04000000))
 #define VIDEOMODE_3 0x0003
 #define BGMODE_2	0x0400
-```
+~~~~
 
 Ok so I'm not going to lie, the first perhaps 15 of these GBA programming tutorials may involve quite a lot of "Hey! lets #define a memory address!". Now with the above defined we can re-write line 7 of code to be way more readable.
 
-```c
+~~~~ { .c }
 //set GBA rendering to MODE 3 Bitmap rendering
 REG_DISPLAYCONTROL = VIDEOMODE_3 | BGMODE_2;
-```
+~~~~
 
 There that already looks better. Let's add a few more defines....
 
-```c
+~~~~ { .c }
 
 #define SCREENBUFFER ((v_int16*)(0x06000000))
 #define SCREEN_W 240
 #define SCREEN_H 160
 
-```
+~~~~
 
 Ok so now you could replace the Unsigned short pointer to memory address 0x06000000 on line 14 with 
 
-```c
+~~~~ { .c }
 SCREENBUFFER[x+y*SCREEN_W] = ((((x&y)+t) & 0X1F) << 10)|
-```
+~~~~
 
 But that doesn't really improve how readable the code is.
 
@@ -95,22 +103,22 @@ Ideally to prevent visible tearing when we render out to the screen buffer we wa
 
 Prior to the main function on line 30 add in the following code to define the memory address of the VBLANK register and a function to read from it.
 
-```c
+~~~~ { .c }
 #define REG_VCOUNT (*(v_uint16*)(0x04000006))
 void vsync()
 {
 	while (REG_VCOUNT >= 160);
 	while (REG_VCOUNT < 160);
 }
-```
+~~~~
 
 Than within main() after the display control register is set add the following 
 
-```c
+~~~~ { .c }
 while (1) { //loop forever
     vsync();
 }
-```
+~~~~
 
 Ok now we have a program that will loop forever and will sit in the vsync() function until the hardware tells us that we are within the VBLANK window. This isn't the best way to do this, but for now this will suffice, we will revisit vsync at a later date.
 
@@ -121,17 +129,17 @@ Ok a quick function to set the colour of a pixel. In Mode 3 the GBA makes use of
 Here's a function that makes use of some bit shifting and masking to set the colour values in a uint16.
 
 
-```c
+~~~~ { .c }
 uint16 setColor(uint8 a_red, uint8 a_green, uint8 a_blue)
 {
 	return (a_red & 0x1F) | (a_green & 0x1F) << 5 | (a_blue & 0x1f) << 10;
 }
-```
+~~~~
 
 Well here's some functionality to draw some basic rectangles, and a draw line function that should work for lines being drawn in any direction not just left to right.
 The drawRect function takes in the location of the upper left corner of the box to be drawn and a width and height to size the box acordingly.
 
-```c
+~~~~ { .c }
 void drawRect(int32 a_left, int32 a_top, int32 a_width, int32 a_height, uint16 a_color)
 {
 	for (uint32 y = 0; y < a_height; ++y)
@@ -142,12 +150,11 @@ void drawRect(int32 a_left, int32 a_top, int32 a_width, int32 a_height, uint16 a
 		}
 	}
 }
-
-```
+~~~~
 
 This is the draw line function, the contents of which come from the Wikipedia article describing [Bresenham's Line Algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm), the function takes a starting X and Y position and an ending X and Y position. The line will be drawn from point (a_x, a_y) to point (a_x2, a_y2).
 
-```c
+~~~~ { .c }
 void drawLine(int32 a_x, int32 a_y, int32 a_x2, int32 a_y2, uint16 a_color)
 {
 	int32 w = a_x2 - a_x;
@@ -179,27 +186,27 @@ void drawLine(int32 a_x, int32 a_y, int32 a_x2, int32 a_y2, uint16 a_color)
 		}
 	}
 }
-```
+~~~~
 
 Ok so that's the drawing routines that we need to get Pong up and running out of the way. Let's start with getting a ball up and drawing to the screen and moving around
 
 As we're using C and not C++ we only have access to structs and not classes. Structs in C do not, repeat **do not** have functions. They are **data only**.
 So to define our Ball we can define it as follows
 
-```c
+~~~~ { .c }
 typedef struct Ball
 {
 	int32 x, y, xDir, yDir, size;
 	uint16 color;
 }Ball;
-```
+~~~~
 
 Again this definition should go outside of any other functionality and just prior to the location of the main() function. 
 Now the fun part adding in the functionality for the ball. As we're using C we don't have access to C++'s name mangling that happens at compile time, so functions all have to be explicitly named to avoid any naming collisions. 
 So lets add an initialise and an initialise, a move, a draw and a clear function for the ball structure.
 After the definition of the ball structure add the following 
 
-```c
+~~~~ { .c }
 void InitBall(Ball* a_ball, int32 a_x, int32 a_y, int32 a_size, int16 a_color)
 {
 	a_ball->x = a_x;
@@ -253,7 +260,7 @@ void DrawBall(Ball* a_ball)
 void StartBall(Ball* a_ball) {
 	
 }
-```
+~~~~
 
 In the above it's important to note that we're passing the ball object around as a pointer, if this were C++ I'd do this as a reference argument but C doesn't support that. So pointers it is. 
 
@@ -269,7 +276,7 @@ Let's add a little bit of movement to the ball by getting that StartBall functio
 
 Here's the code to get some random numbers happenning, oh and I've gone ahead and defined a function to get the sign of a nmber and the absolute value of a number too. These fucntions should be put into the code after the vsync function declaration but prior to the setColour function.
 
-```c
+~~~~ { .c }
 int32 __qran_seed = 42;
 
 int32 sqran(int32 a_val)
@@ -300,11 +307,11 @@ int32 abs(int32 a_val)
 	int32 mask = a_val >> 31;
 	return (a_val ^ mask) - mask;
 }
-```
+~~~~
 
 Then in the StartBall function the following code can be written, this creates a small loop to get teh ball moving in the left or right direction and then a random Y direction, this loop is there to prevent the ball from not moving in the X direction.
 
-```c
+~~~~ { .c }
 void StartBall(Ball* a_ball) {
 	while (a_ball->xDir == 0)
 	{
@@ -312,7 +319,7 @@ void StartBall(Ball* a_ball) {
 	}
 	a_ball->yDir = qran_range(-1, 2);
 }
-```
+~~~~
 
 So that's a moving ball that re-centers itself when it goes outside the bounds of the screen.
 
@@ -320,17 +327,17 @@ Next up we need to draw a couple of paddles.
 
 The paddle structure looks like this:
 
-```c
+~~~~ { .c }
 typedef struct Paddle
 {
 	int32 x, y, width, height;
 	uint16 color;
 }Paddle;
-```
+~~~~
 
 Then there's the paddle functionality to consider, which is largely the same as the code that was produced for the ball.
 
-```c
+~~~~ { .c }
 void InitPaddle(Paddle* a_paddle, int32 a_x, int32 a_y, int32 a_width, int32 a_height, int16 a_color)
 {
 	a_paddle->x = a_x;
@@ -363,7 +370,7 @@ void DrawPaddle(Paddle* a_paddle)
 {
 	drawRect(a_paddle->x, a_paddle->y, a_paddle->width, a_paddle->height, a_paddle->color);
 }
-```
+~~~~
 
 This now leaves you to modify your main function to look like the following image
 

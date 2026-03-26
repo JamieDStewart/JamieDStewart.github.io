@@ -9,18 +9,39 @@
 <body>
   <div class="layout">
     <aside class="sidebar">
-      <div class="site-title">My Site</div>
+      <div class="site-header">
+        <div class="profile-section">
+          <a href="https://github.com/JamieDStewart">
+            <img src="https://avatars.githubusercontent.com/u/14076695?s=96&v=4" alt="@JamieDStewart" class="avatar">
+          </a>
+          <div class="profile-info">
+            <h1 class="profile-name">
+              <a href="https://github.com/JamieDStewart" class="profile-link">
+                Jamie Stewart
+              </a>
+            </h1>
+          </div>
+        </div>
+        <div class="site-subtitle">
+          Spare parts and bits of code.<br>
+          I write about game dev and programming for older hardware.
+        </div>
+      </div>
+      <div class="welcome">
+        <a href="/index.html" class="welcome-link"><h3>Welcome</h3></a>
+      </div>
       <nav class="nav"></nav>
     </aside>
 
     <main class="content">
       <div class="content-inner">
-        <h1>Welcome</h1>
-        <p>Select a post from the sidebar.</p>
+        <div id="md-container" class="md-sandbox">
+          <div id="welcome-post"></div>
+        </div>
       </div>
     </main>
-  </div>
-
+  </div>  
+  <script src="/js/render-welcome.js"></script>
   <script src="/js/load-posts.js"></script>
 </body>
 </html>

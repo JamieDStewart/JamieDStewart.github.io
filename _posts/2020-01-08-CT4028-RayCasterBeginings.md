@@ -1,16 +1,5 @@
----
-layout: post
-title: "CT4028 - RayCaster Beginnings"
-categories:
-  - CT4028 RayCaster
-tags:
-  - programming
-  - RayCaster
-  - Project setup
-  - C++
-  - CT4028
-  - Data structures
----
+
+# CT4028 - RayCaster Beginnings
 
 This is the first in a series of tutorial posts that discuss development of an 'old school' RayCaster game like Catacomb 3-D or Wolfenstein 3D.
 The intent of these tutorials is to provide content and guidance for the UoG first year Games Programming module CT4028 Game Programming & Design Structures. The assessment for this module is to create a simple renderer in C++ that uses RayCasting to create a 3D environment for a player to navigate with some enemy entities that patrol the level.  
