@@ -1,18 +1,4 @@
----
-layout: post
-title: "GBA Development: Bitmap Loading & Rendering"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
-  - bitmap rendering
-  - bitmap
-  - Mode3
-  - Mode4
-  - Mode5
----
+# GBA Development: Bitmap Loading & Rendering
 
 So up until this point we have only looked at rendering in Mode 3, and then we have only looked at rendering lines, and boxes. The GBA supports multipe different rendering modes Modes 3 through to 5 are for bitmap rendering.  I'll briefly explain how these three render modes work.
 
@@ -34,10 +20,10 @@ Fundamentally in bitmap rendering modes VRAM is treated as what gets displayed o
 In Render Mode3 the GBA hardware treats VRAM as one big area of screen where each pixel occupies 16bits worth of data. Well it certainly does this for the first 76,800 bytes (75Kb) of VRAM, as Mode 3 gives us on screen worth of data 240 x 160 pixels @ 16 bits per pixel (2 * 240 * 160 = 76,800 bytes ).
 In Mode 3 palette memory is not used to determine the colour of the pixel, the colour data is read directly out of VRAM. For example storing a value of 31 at any memory location in VRAM will draw a red pixel to the screen at that pixel location.
 This is what we have been using in our draw routines so far.
-{% highlight C %}
+```c
 //The following code would colour the second pixel on the screen to Red
 SCREENBUFFER[1] = 31 
-{% endhighlight %}
+```
 Pixels on the GBA screen start at the upper left corner of the screen and increment as they move right across the screen. The first pixel on the second row of the screen would be at SCREENBUFFER array position 240 as with arrays westart counting from 0.
 So we have a total of 38,400 pixels on the screen with which to create our vibrant landscapes.
 
@@ -125,13 +111,13 @@ The Syntax for memcpy is **memcpy( destination, source, number of bytes to copy)
 
 For Mode 4 rendering palette memory needs to be copied into the background palette bank the memory address that MEM_PALETTE points to is defined in **gba_gfx.h** as:
 
-{% highlight C %}
+```c
 #define MEM_PALETTE			((u16*)0x05000000) 
-{% endhighlight %}
+```
 
 The contents for **main.c** are as Follows:
 
-{% highlight C %}
+```c
 #include "gba_macros.h"
 #include "gba_types.h"
 #include "gba_gfx.h"
@@ -194,7 +180,7 @@ int main()
 	
 	return 0;
 }
-{% endhighlight %}
+```
 
 If everything has gone to plan and you have implemented the above then you should be presented with the following when running the program.
 

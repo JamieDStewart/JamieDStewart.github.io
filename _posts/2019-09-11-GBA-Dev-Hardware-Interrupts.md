@@ -1,19 +1,8 @@
----
-layout: post
-title: "GBA Development: Interrupt Handling"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
-  - hardware interrupts
-  - interrupts
----
+# GBA Development: Interrupt Handling
 
 Alright so we should all be able to agree that the following is a really bad way to handle VSYNC:
 
-{% highlight C %}
+```c
 
 void vsync()
 {
@@ -21,7 +10,7 @@ void vsync()
 	while (REG_VCOUNT < 160);
 }
 
-{% endhighlight %}
+```
 
 Let's change this so that we hadle VSYNC in a much more sensible fashion and we will introduce how to use hardware interrupts.
 
@@ -36,7 +25,7 @@ In order for interrupts to be enabled on the GBA there needs to be a hardware fl
 
 As these hardware interrupts are handled at the bios level then let's introduce a new header file into our GBA project called **gba_bios.h** and an accompanying **gba_bios.c** source file. Add the following content to this file, we now have a define named for the IME which is located at the memory address 0x04000208.
 
-{% highlight C %}
+```c
 #ifndef __GBA_BIOS_H__
 #define __GBA_BIOS_H__
 
@@ -48,7 +37,7 @@ As these hardware interrupts are handled at the bios level then let's introduce 
 #define REG_IME (*(v_u16*)(0x4000208))
 
 #endif //__GBA_BIOS_H__
-{% endhighlight %}
+```
 
 ### Setting and Acknowledging Interrupts ###
 Now that we have a way to enable interrupts we need to be able to set those interrupts up to be triggered, and when triggered we need a way to acknowledge when these interrupts are handled.
@@ -58,14 +47,14 @@ There are two 16 bit registers that are used to set and acknowledge interrupts. 
 
 These defines could now be added into our newly created **gba_bios.h** file
 
-{% highlight C %}
+```c
 
 //Interrupts that are registered or Interrupts Expected
 #define REG_IE (*(v_u16*)(0x4000200))
 //IF is the interrupt Fired, 
 #define REG_IF (*(v_u16*)(0x4000202))
 
-{% endhighlight %}
+```
 
 The breakdown of individual bits in these registers is presented on GBATek as follows:
  
@@ -94,17 +83,17 @@ Ok it's great that we have some interrupt registers, but how does any code, or r
 
 Well as we're intereseted in setting up a VBLANK interrupt there is an additional place that we need to register that interrupts are enabled for the screen and this is with the register for the display status (**REG_DIPSTAT**) so let's add that into the gba_bios.h file too.
 
-{% highlight C %}
+```c
 
 //REG_DIPSTAT interrupts for the display need to be registered here too
 // for the display to fire the interrupts off
 #define REG_DISPSTAT (*(v_u16*)(0x4000004))
 
-{% endhighlight %}
+```
 
 Ok so when an interrupt is registered when the criteria for that interrupt is met, such as when the display controller informs the CPU that a VBLANK is occuring then the CPU will call the memory address that is pointed to by 0x03007FFC, so in effect what we need to do is store a pointer to a void function that takes no arguments at this memory location. 
 
-{% highlight C %}
+```c
 
 //REG_INTERRUPT this memory address is where the interrupt funciton pointer will be stored
 #define REG_INTERRUPT *(fnptr*)(0x03007FFC)
@@ -112,13 +101,13 @@ Ok so when an interrupt is registered when the criteria for that interrupt is me
 //that any interrupts it was expecting have been dealt with.
 #define REG_IFBIOS (*(v_u16*)(0x3007FF8))
 
-{% endhighlight %}
+```
 
 In the above the define for REG_IFBIOS is defined, this is a register that duplicates the REG_IF register and is used by the bios to acknowledge any interrutps that the bios needs to be concerned with such as IntrWait and VBlankIntrWait
 
 Now that all the registers are defined it will make the code much easier to read and use if we additionally define all of our potential interrupt flags. Go ahead and add in the following defines to gba_bios.h which reflect the bit values in the above bullet point list for REG_IE and REG_IF. Additionally the dfeined values for the REG_DIPSTAT are defined in this code block.
 
-{% highlight C %}
+```c
 
 //Defines for Interrupts
 //There are 14 Interrupts that we can register with REG_IE
@@ -141,7 +130,7 @@ Now that all the registers are defined it will make the code much easier to read
 #define DSTAT_VHB_IRQ 0x0010
 #define DSTAT_VCT_IRQ 0x0020
 
-{% endhighlight %}
+```
 
 ### Putting it all Together ###
 
@@ -149,16 +138,16 @@ Now that the registers are all defined let's get some functions created that mak
 
 I don't want to get into this just yet but interrupts are handled via ARM specific code in order to get things working happily on the GBA we will need to add the following into the **gba_macros.h** file
 
-{% highlight C %}
+```c
 
 #define ARM __attribute__((__target__("arm")))
 #define THUMB __attribute__((__target__("thumb")))
 
-{% endhighlight %}
+```
 
 With those defines in gba_macros.h we can now add teh following code into **gba_bios.h**
 
-{% highlight C %}
+```c
 
 typedef void (*fnptr)(void);
 
@@ -169,13 +158,13 @@ ARM void interruptHandler();
 //this is the funciton that we wil call to register that we want to register a VBLANK Interrupt
 void register_vblank_isr();
 
-{% endhighlight %}
+```
 
 Here we have typedef'd out fnptr to indicate a function that is of return type void and takes no function arguments/parameters.
 
 Now in gba_bios.c we need to write out function definitions for the three function we have declared up above.
 
-{% highlight C %}
+```c
 
 #include "gba_bios.h"
 
@@ -200,7 +189,7 @@ void register_vblank_isr()
 	REG_IME = 0x01;
 }
 
-{% endhighlight %}
+```
 
 Ok so function by function then:
 
@@ -217,7 +206,7 @@ This function demonstrates how to set up for a VBLANK interrupt to be handled, f
 
 To make use of this we can now call register_vblank_isr() in our program to register for vblank
 for example somewhere in our main.c file
-{% highlight C %}
+```c
 ....... 
 //set GBA rendering context to MODE 3 Bitmap Rendering
 REG_DISPCNT = VIDEOMODE_3 | BGMODE_2;
@@ -227,11 +216,11 @@ register_vblank_isr();
 gba_seed_rand(14);
 Paddle p1;
 ..........
-{% endhighlight %}
+```
 
 Then within the main while loop we can add the following...
 
-{% highlight C %}
+```c
 .......
 while (1) 
 { //loop forever
@@ -239,7 +228,7 @@ while (1)
 	vblank_intr_wait();
 	PollKeys();
 .......
-{% endhighlight %}
+```
 
 That should be enough to get the VBLANK interrupt happening and to finally get rid of having to use the laothsome VSync function that we were previously relying upon to sync up our frame rate and our processing.
 

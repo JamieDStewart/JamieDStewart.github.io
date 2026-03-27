@@ -1,21 +1,12 @@
----
-layout: post
-title: "GBA Development: Splitting up a Project"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
----
+# GBA Development: Splitting up a Project
 
 Right so in the last tutorial video that I uploaded I did something that I'm not really that happy with. The use of #pragma region.
 
-{% highlight C %}
+```c
 #pragma region SOME_GBA_CODE
 //...
 #pragma endregion
-{% endhighlight %}
+```
 
 While this works, and can be used to hide away long sections of code when I'm working in one file there's a problem with this. It's lazy and *I'm working in one file* so let's tackle this issue really quickly and split our project up into multiple files.
 
@@ -27,20 +18,20 @@ So let's rename this file to something more apt like **gba_macros.h**, VS Code m
 
 Ok so right click and rename *Intellisense.h* to *gba_macros.h* then in the **main.c** file we will have to modify the #include for our file
 
-{% highlight C %}
+```c
 //it was this
 #include "Intellisense.h"
 //it should now be this...
 #include "gba_macros.h"
-{% endhighlight %}
+```
 
 Let's add some additional code into *gba_macros.h*, put the following into the file so that it appears before the line *#endif //__GBA_MACRO_H__*
 
-{% highlight C %}
+```c
 #ifndef	NULL
 #define	NULL	(void*)0
 #endif
-{% endhighlight %}
+```
 
 Right so that seems like a good place to put our definintion of *NULL*, or at least as good as any.  
 Ok so that was pretty easy, now the slightly longer process of splitting up what we have in **main.c** into multiple files.  
@@ -49,7 +40,7 @@ If we create a new file in our **include** folder called **gba_types.h**. Now I 
 
 In our newly created *gba_types.h* file (which is inside your includes folder), add the following code.  
 
-{% highlight C %}
+```c
 //Author: ...
 //Data: ...
 //Desc: This is a small header file used to define types that are used for GBA development
@@ -78,7 +69,7 @@ typedef volatile uint16_t		v_u16;	typedef volatile int16_t		v_s16;
 typedef volatile uint32_t		v_u32;	typedef volatile int32_t		v_s32;
 
 #endif //__GBA_TYPES_H__
-{% endhighlight %}
+```
 
 Ok now inside of *main.c* we can remove the code where we have typedefined out all the above variables. Instead we can replace this with a simple **#include "gba_types.h"**
 
@@ -89,7 +80,7 @@ Ok so lets make a really small header file that keeps track of all the base regi
 
 Put the following content in **gba_reg.h**
 
-{% highlight C %}
+```c
 //---------------------------------------------------------------------------------
 //This class defines the base register addresses for I/O VRAM etc
 //---------------------------------------------------------------------------------
@@ -124,7 +115,7 @@ Put the following content in **gba_reg.h**
 #define	SRAM		0x0E000000
 
 #endif //__GBA_REG_H__
-{% endhighlight %}
+```
 
 Ok no need to move any code around in *main.c* with that new file we've just created but go ahead and build the project anyway just to make sure that there are no errors with what we've done.  
 
@@ -134,7 +125,7 @@ Inside of this file we're going to put our defines for any of the registers and 
 This will be things like the define for **REG_DISPCNT**, setting our video modes and which backgrounds are enabled as well as functionality for things like vsync.
 The content of this *gba_gfx.h* header file will look like the following:  
 
-{% highlight C %}
+```c
 #ifndef __GBA_GFX_H__
 #define __GBA_GFX_H__
 
@@ -165,14 +156,14 @@ The content of this *gba_gfx.h* header file will look like the following:
 extern void vsync();
 
 #endif //__GBA_GFX_H__
-{% endhighlight %}
+```
 
 Ok one thing about the above is the use of the *extern* keyword infront of our function definition. This is a C keyword that indicates that the function/struct/variable being externed is going to be defined somewhere else and that this is just a declaration. In C functions have a default extern value, so we don't explicitly need to use the extern keyword here, but just to be relly explicit as to what's going on I will be.  
 If you want to read more about this [TutorialsPoint](https://www.tutorialspoint.com/extern-keyword-in-c) has a pretty good post regarding this keyword.
 
 Ok now that the *gba_gfx.h* file has been implemented time to put some code in a **gba_gfx.c** file. So if we add a new source file to our project, right click the source folder and *"add new file"* name it *gba_gfx.c* and then add we need to add the definition for our **vsync()** funciton. 
 
-{% highlight C %}
+```c
 #include "gba_gfx.h"
 
 
@@ -182,13 +173,13 @@ void vsync()
 	while (REG_VCOUNT < 160);
 }
 
-{% endhighlight %}
+```
 
 Alright we're maybe about halfway there now. The next file to tackle would be to take the random number generation functionality and vafriables out of our **main.c** file and put them in their own file, along with the **abs( s32 a_val)** function that is also found in our main.c file.
 
 So creating a new file called **gba_mathUtil.h** and adding in only the variable and function declarations and not the definitions would provide us with the following:
 
-{% highlight C %}
+```c
 #ifndef __GBA_MATHUTIL_H__
 #define __GBA_MATHUTIL_H__
 
@@ -202,13 +193,13 @@ extern s32 sign(s32 a_val);
 extern s32 abs(s32 a_val);
 
 #endif //__GBA_MATHUTIL_H__
-{% endhighlight %}
+```
 
 Now you can see that we have a variable defined in this header, *__gba_rand_seed* this variable has the extern keyword infront of it which makes this variable visible globally within any source files.  I know that there are arguments that global variables are bad, and there are ways to avoid using them, however in this scenario a global variable will suffice and won't impact upon our design of the gba_ files.
 
 With our *gba_mathUtil.h* header file looking like the above then we should put the function definitions in the *gba_mathUtil.c* source file. We will need to allocate a value into our externed *__gba_rand_seed* variable too or the memory for that variable will not be assigned and the varialbe will not be accessable.
 
-{% highlight C %}
+```c
 #include "gba_mathUtil.h"
 
 s32 __gba_rand_seed = 42;
@@ -241,13 +232,13 @@ s32 abs(s32 a_val)
 	s32 mask = a_val >> 31;
 	return (a_val ^ mask) - mask;
 }
-{% endhighlight %}
+```
 
 So this now leaves us with only some of the drawing code to be defined on the GBA side before we need to split up our game specific code into separate headers and source files.
 
 Create a new file called **gba_drawing.h** and make sure it has the following content:
 
-{% highlight C %}
+```c
 #ifndef __GBA_DRAWING_H__
 #define __GBA_DRAWING_H__
 
@@ -264,11 +255,11 @@ extern void drawRect(u32 a_left, u32 a_top, u32 a_width, u32 a_height, u16 a_col
 extern void drawLine(s32 a_x, s32 a_y, s32 a_x2, s32 a_y2, u16 a_color);
 
 #endif //__GBA_DRAWING_H__
-{% endhighlight %}
+```
 
 Then the content of the source file **gba_drawing.c** (which you will need to create) becomes:
 
-{% highlight C %}
+```c
 #include "gba_drawing.h"
 #include "gba_mathUtil.h"
 
@@ -319,13 +310,13 @@ void drawLine(s32 a_x, s32 a_y, s32 a_x2, s32 a_y2, u16 a_color)
 		}
 	}
 }
-{% endhighlight %}
+```
 
 Splitting up the game code should prove to be quite straight forward if you have followed the above, so I'll leave that as an exercise for the reader. Or if you want to cheat you can of course assess all this sourcecode on [GitHub](https://github.com/JamieDStewart/GBA_Tutorials).
 
 I'll leave you with what the content of the **main.c** file should look like with the game specific code split out into a **ball.h/.c** and **paddle.h/.c** header and source files. The next post after this I'll tackle how to handle button input on the GBA.
 
-{% highlight C %}
+```c
 #include "gba_macros.h"
 #include "gba_types.h"
 #include "gba_gfx.h"
@@ -392,4 +383,4 @@ int main()
 	
 	return 0;
 }
-{% endhighlight %}
+```

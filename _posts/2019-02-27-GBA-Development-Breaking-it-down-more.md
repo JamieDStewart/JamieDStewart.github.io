@@ -1,13 +1,4 @@
----
-layout: post
-title: "GBA Development: Breaking the initial tutorial up a little bit more"
-categories:
-  - GBA Dev
-tags:
-  - gameboy advance
-  - programming
-  - vs code
----
+# GBA Development: Breaking the initial tutorial up a little bit more
 
 Ok so one thing I'd like to aim to do is to keep my tutorial videos shorter than 30 minutes a piece. Ideally I'd like them to be less than 20 minutes each to watch, as I feel anything longer than that might lose it's focus.  
 I much prefer to break a task down into smaller parts with a single focus.  
