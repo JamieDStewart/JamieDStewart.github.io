@@ -56,21 +56,25 @@ html, body {
   content: '▶ ';
 }
 
-.nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem 0;
+.nav .category-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.category-list.collapsed {
-  display: none;
-}
 
 .nav li {
   margin: 0;
+}
+
+.category-list {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+}
+
+.category-list.expanded {
+  max-height: 500px; /* large enough to fit your biggest list */
 }
 /*--------------------------------------------------------------
  Profile Section
@@ -218,6 +222,8 @@ code {
   color: #e5e7eb;
   text-decoration: none;
 }
+
+
 
 
 
