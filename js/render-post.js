@@ -1,19 +1,3 @@
-// --- Utility: wait until Markdeep is fully loaded ---
-function waitForMarkdeepReady() {
-  return new Promise(resolve => {
-    if (window.markdeep && window.markdeep.formatFragment) {
-      resolve()
-      return
-    }
-
-    const check = setInterval(() => {
-      if (window.markdeep && window.markdeep.formatFragment) {
-        clearInterval(check)
-        resolve()
-      }
-    }, 50)
-  })
-}
 
 // --- Load marked script dynamically ---
 function loadMarked() {
@@ -30,30 +14,69 @@ function loadMarked() {
   })
 }
 
-// --- Load post name from URL ---
-const params = new URLSearchParams(location.search)
-const name = params.get("name")
+function loadHighlightJs() {
+  return new Promise((resolve, reject) => {
+    if (window.hljs) {
+      resolve()
+      return
+    }
 
-// --- Fetch and render the post ---
-async function renderPost() {
-  if (!name) return
-
-  const response = await fetch("/_posts/" + name)
-  const md = await response.text()
-
-  const post = document.getElementById("post")
-  post.textContent = md   // Use textContent to preserve whitespace for code blocks
-
-  // Load marked and process
-  await loadMarked()
-
-  // Configure marked to allow HTML and use highlight.js for code
-  marked.setOptions({
-    breaks: true,
-    gfm: true
+    const script = document.createElement('script')    
+    script.src = 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js'
+    script.onload = resolve
+    script.onerror = reject
+    document.head.appendChild(script)
   })
-
-  post.innerHTML = marked.parse(md)
 }
 
-renderPost()
+
+// --- Core renderer for any markdown target ---
+async function renderMarkdownInto(elementId, url) {
+  const container = document.getElementById(elementId)
+  if (!container) return
+
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      container.textContent = "Failed to load content."
+      return
+    }
+
+    const md = await response.text()
+
+    // Load Marked only
+    await loadMarked()
+
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    })
+
+    // Render Markdown → HTML
+    const html = marked.parse(md)
+    container.innerHTML = html
+
+    // 🔍 Check if code blocks exist
+    const hasCodeBlocks = container.querySelector('pre code')
+
+    if (hasCodeBlocks) {
+      await loadHighlightJs()
+      hljs.highlightAll()
+    }
+
+  } catch (err) {
+    console.error(err)
+    container.textContent = "Error loading content."
+  }
+}
+
+
+// --- Load welcome post --
+renderMarkdownInto("welcome-post", "/_welcome/welcome.md")
+
+// -- Load dynamic post if ?name=.. is present ---
+const params = new URLSearchParams(location.search)
+const name = params.get("name")
+if(name){
+  renderMarkdownInto("post", "/_posts/" + name)
+}

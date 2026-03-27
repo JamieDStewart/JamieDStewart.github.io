@@ -1,10 +1,6 @@
-.site-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-/* Force layout stability */
+/*--------------------------------------------------------------
+ GLOBAL
+ --------------------------------------------------------------*/
 html, body {
   margin: 0 !important;
   padding: 0 !important;
@@ -12,102 +8,44 @@ html, body {
   background: #f3f4f6 !important;
 }
 
+ .site-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
 .layout {
   display: flex !important;
   flex: 1 !important;
 }
 
-/* Safe reset that won't break syntax highlighting */
-.md-sandbox p,
-.md-sandbox h1,
-.md-sandbox h2,
-.md-sandbox h3,
-.md-sandbox div {
-  color: inherit;
-  background: inherit;
-  font-family: inherit;
-}
-
-/* Restore spacing inside the post content */
-.markdeep .md {
-  padding: 1rem 0;
-  white-space: pre-wrap;
-}
-
-#post {
-  font-family: system-ui, sans-serif;
-  color: #333;
-  line-height: 1.6;
-}
-
-#post h1, #post h2, #post h3, #post h4, #post h5, #post h6 {
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-  color: #111;
-}
-
-#post p {
-  margin: 0;
-}
-
-#post code {
-  background: #f4f4f4;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-family: 'Courier New', monospace;
-}
-
-#post pre, #post .code {
-  background: #f4f4f4;
-  padding: 1rem;
-  border-radius: 5px;
-  overflow-x: auto;
-  margin: 1rem 0;
-  font-family: 'Courier New', monospace;
-}
-
-#post img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1rem auto;
-}
-
-.nav h3 {
-  margin: 1rem 0 0.5rem 0;
-  font-size: 1rem;
-  font-weight: 600;
+/*--------------------------------------------------------------
+ Sidebar + Navigation
+ --------------------------------------------------------------*/
+.sidebar {
   color: #e5e7eb;
 }
 
-.welcome{
-  cursor: pointer;
-  font-size: 1rem;
+.sidebar a {
   color: #e5e7eb;
-  text-decoration: none;
+  text-decoration:none;
 }
 
-.welcome h3{
-  margin: 1rem 0 0.5rem 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #e5e7eb;
+
+.sidebar a:hover {
+  color: #fff;  
 }
 
-.welcome a,
-.welcome a:visited,
-.welcome a:hover,
-.welcome a:active {
-  color: #e5e7eb;
-  text-decoration: none;
+.sidebar h3,
+.sidebar .category-header {
+   margin: 1rem 0 0.5rem 0;
+   font-size: 1rem;
+   font-weight: 600;
+   color: #e5e7eb;
 }
 
 .category-header {
   cursor: pointer;
-  margin: 1rem 0 0.5rem 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #e5e7eb;
 }
 
 .category-header::before {
@@ -134,26 +72,16 @@ html, body {
 .nav li {
   margin: 0;
 }
-
-.nav a {
-  color: #e5e7eb;
-  text-decoration: none;
-  padding: 6px 0;
-  display: block;
-}
-
-.nav a:hover {
-  color: #fff;
-}
-
+/*--------------------------------------------------------------
+ Profile Section
+ --------------------------------------------------------------*/
 .site-header {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid #e1e4e8;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  border-bottom: 1px solid #e1e4e8;  
 }
 
 .profile-section {
@@ -198,19 +126,102 @@ html, body {
   color: #ffffff;
 }
 
-/* Allow Markdeep syntax highlighting to show */
-.md-sandbox pre code span {
-  color: unset !important;
-  background: unset !important;
+/*--------------------------------------------------------------
+ Post Content (Marked + Highlight.js)
+ --------------------------------------------------------------*/
+#post {
+  font-family: system-ui, sans-serif;
+  color: #333;
+  line-height: 1.6;
 }
 
-.md-sandbox pre code span.keyword,
-.md-sandbox pre code span.type,
-.md-sandbox pre code span.comment,
-.md-sandbox pre code span.string,
-.md-sandbox pre code span.literal,
-.md-sandbox pre code span.preproc,
-.md-sandbox pre code span.ident {
-  all: unset !important;
-  color: inherit;
+#post h1,
+#post h2,
+#post h3,
+#post h4,
+#post h5,
+#post h6 {
+  margin: 1.6rem 0 0.8rem 0;
+  font-weight: 600;
+  color: #111;
 }
+
+#post p {
+  margin: 0.8rem 0;
+}
+
+#post ul {
+  padding-left: 1.4rem;
+  margin: 0.8rem 0;
+}
+
+#post img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+}
+/*--------------------------------------------------------------
+ Post Content (Marked + Highlight.js)
+ --------------------------------------------------------------*/
+pre code {
+  display: block;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  overflow-x: auto;
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: #1b1f24;
+  color: #e6edf3;
+  font-size: 0.9rem;
+}
+/*--------------------------------------------------------------
+ Animations
+ --------------------------------------------------------------*/
+.fade-in {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.fade-in.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.welcome{
+  cursor: pointer;
+  font-size: 1rem;
+  color: #e5e7eb;
+  text-decoration: none;
+}
+
+.welcome h3{
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.welcome a,
+.welcome a:visited,
+.welcome a:hover,
+.welcome a:active {
+  color: #e5e7eb;
+  text-decoration: none;
+}
+
+
+
+
+
+
+
