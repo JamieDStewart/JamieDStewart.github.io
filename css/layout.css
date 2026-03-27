@@ -1,11 +1,18 @@
 body {
   min-height: 100vh;
   display: flex;
+  height: 100vh;        /* full viewport height */
+  display: flex;
+  overflow: hidden;     /* prevent body scrolling */
 }
+
 .layout {
   display: flex;
   flex: 1;
+  height: 100vh;        /* ensures children can scroll */
+  overflow: hidden;
 }
+
 .sidebar {
   width: 240px;
   background: #111827;
@@ -14,7 +21,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  overflow-y: auto;     /* sidebar scrolls independently */
 }
+
 .nav {
   display: flex;
   flex-direction: column;
