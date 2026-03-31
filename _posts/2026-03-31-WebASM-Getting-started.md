@@ -75,6 +75,6 @@ Then inside of the nano editor add some HTML to the file:
 
 Then as python is set up on the Pi by default I can simply run `python3 -m http.server 8000` to run a web server from this directory and browse to the IP address of my Pi to see the resutls. Which looks like nothing at first, but press *F12* to view source and look at the console and I can see that everything has worked
 
-![HTML Console](/asset/images/2026-03-31-01.png "Web Console Output")
+![HTML Console](/assets/images/2026-03-31-01.png "Web Console Output")
 
 So this was a frist step in the setup and a bit of the rational behind why I'll be writing a bit about using WebASM to show off some small projects.
